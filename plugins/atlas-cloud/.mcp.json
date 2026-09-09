@@ -1,0 +1,7 @@
+{
+  "mcpServers": {
+    "Atlas Cloud": {
+      "url": "https://atlascloud-mcp.dev.atlascloud.ai/mcp"
+    }
+  }
+}
