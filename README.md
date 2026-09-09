@@ -16,20 +16,25 @@ Or from a terminal:
 ```bash
 codex plugin marketplace add AtlasCloudAI/atlas-cloud-plugin
 codex plugin add atlas-cloud@atlas-cloud
-codex mcp login "Atlas Cloud"
+codex mcp login atlas-cloud
 ```
 
-Turn on the **Atlas Cloud** MCP server on the plugin page. The first time you do, a browser opens
+Turn on the **atlas-cloud** MCP server on the plugin page. The first time you do, a browser opens
 to sign in and approve; after that it stays authorized.
 
 ## What you get
 
 | | |
 |---|---|
-| **Atlas Cloud** (MCP server) | Browse the live model catalog and run image, video, audio and transcription jobs from chat. Every billable call shows the model and price first and waits for your confirmation. |
+| **atlas-cloud** (MCP server) | Browse the live model catalog and run image, video, audio and transcription jobs from chat. Every billable call shows the model and price first and waits for your confirmation. |
 | **Media Generation** (skill) | How to call Atlas from your own project — endpoints, auth, polling. This route uses your own API key. |
 | **Seedance** (skill) | Storyboard-driven Seedance video: consistent people, products and scenes, reference-to-video, extensions. |
 | **Universal Video Prompt** (skill) | One model-agnostic prompt spec, compiled to whichever video model you can actually call. |
+
+> The MCP server is named `atlas-cloud`, not `Atlas Cloud`. Codex validates server
+> names against `^[a-zA-Z0-9_:@/.-]+$` when it launches one, so a space fails to
+> start — and it fails at launch, not at config load, so `codex mcp list` will
+> happily show a name that never connects.
 
 ## Where the skills come from
 
