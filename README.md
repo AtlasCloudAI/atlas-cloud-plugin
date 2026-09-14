@@ -26,7 +26,7 @@ to sign in and approve; after that it stays authorized.
 
 | | |
 |---|---|
-| **atlas-cloud** (MCP server) | Browse the live model catalog and run image, video, audio and transcription jobs from chat. Every billable call shows the model and price first and waits for your confirmation. |
+| **atlas-cloud** (MCP server) | Browse the live model catalog and run image, video, audio and transcription jobs from chat. Small jobs run straight away; only an expensive one stops to quote a price and wait for your go-ahead. |
 | **Media Generation** (skill) | How to call Atlas from your own project — endpoints, auth, polling. This route uses your own API key. |
 | **Seedance** (skill) | Storyboard-driven Seedance video: consistent people, products and scenes, reference-to-video, extensions. |
 | **Universal Video Prompt** (skill) | One model-agnostic prompt spec, compiled to whichever video model you can actually call. |
