@@ -1,11 +1,13 @@
-<h1 align="center">Atlas Cloud plugin for Codex</h1>
+<h1 align="center">Atlas Cloud plugin for Codex and Claude Code</h1>
 
 <p align="center">
-  Generate images, video and audio with 300+ models from inside Codex.<br>
+  Generate images, video and audio with 300+ models from inside Codex or Claude Code.<br>
   Sign in once in the browser — no API key to copy or paste, and generation is billed to your own Atlas account.
 </p>
 
 ## Install
+
+### Codex
 
 In the ChatGPT desktop app: **Settings → Plugins → Add → Add plugin marketplace**, source
 `AtlasCloudAI/atlas-cloud-plugin`, leave the other two fields empty. Then open **Atlas Cloud**
@@ -22,6 +24,24 @@ codex mcp login atlas-cloud
 Turn on the **atlas-cloud** MCP server on the plugin page. The first time you do, a browser opens
 to sign in and approve; after that it stays authorized.
 
+### Claude Code
+
+```text
+/plugin marketplace add AtlasCloudAI/atlas-cloud-plugin
+/plugin install atlas-cloud@atlas-cloud
+```
+
+Then run `/mcp`, pick **plugin:atlas-cloud:atlas-cloud** and choose **Authenticate**. A browser
+opens to sign in and approve; after that it stays authorized.
+
+The same steps work from a terminal:
+
+```bash
+claude plugin marketplace add AtlasCloudAI/atlas-cloud-plugin
+claude plugin install atlas-cloud@atlas-cloud
+claude mcp login plugin:atlas-cloud:atlas-cloud
+```
+
 ## What you get
 
 | | |
@@ -36,11 +56,24 @@ to sign in and approve; after that it stays authorized.
 > start — and it fails at launch, not at config load, so `codex mcp list` will
 > happily show a name that never connects.
 
+## One plugin, two manifests
+
+Both hosts install the same `plugins/atlas-cloud` directory. Codex reads
+`.agents/plugins/marketplace.json` and `.codex-plugin/plugin.json`; Claude Code reads
+`.claude-plugin/marketplace.json` and `plugins/atlas-cloud/.claude-plugin/plugin.json`. The skills
+and `.mcp.json` are shared.
+
+`.mcp.json` sets `"type": "http"` on the server. Claude Code needs it: an entry with only a `url`
+is parsed as a stdio server, fails for lacking a `command`, and is dropped without an error. Codex
+accepts the field and still connects over streamable HTTP. Keep the version in both `plugin.json`
+files in step — each host uses it to decide whether an installed copy is stale.
+
 ## Where the skills come from
 
 The skills are maintained in [AtlasCloudAI/atlas-cloud-skills](https://github.com/AtlasCloudAI/atlas-cloud-skills);
 this repository carries copies of them. Codex does not follow symlinks when it installs a plugin —
-a symlinked `skills/` directory installs empty, with no error — so the copies are real files, and
+a symlinked `skills/` directory installs empty, with no error — and Claude's plugin directory
+rejects symlinks outright, so the copies are real files, and
 `sync-skills.sh` regenerates them from the source repository:
 
 ```bash
