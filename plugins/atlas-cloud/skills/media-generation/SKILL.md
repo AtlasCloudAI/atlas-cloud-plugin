@@ -20,7 +20,10 @@ Then, for anything the user wants generated:
    machine, call `atlas_get_upload_url`, POST the file to the `upload_url` it returns (wait for that
    curl to finish), and pass the `url` from its response to the generation tool. Never inline the
    file as base64 or a `data:` URI.
-3. **Quote first, then generate, then show.** The generation tool returns the model and a live
+3. **Never claim a result you did not get.** If the Atlas tools are missing from your tool list or
+   keep failing, tell the user plainly that Atlas is not reachable right now and nothing was
+   generated. Do not say an image or video was made unless a tool call returned it.
+4. **Quote first, then generate, then show.** The generation tool returns the model and a live
    price and stops; relay them and wait for a yes. Poll `atlas_get_prediction` in the same turn until
    it finishes, save the result locally and show it with `![title](/absolute/path/file.ext)`.
 
