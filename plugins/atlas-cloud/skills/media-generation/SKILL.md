@@ -58,8 +58,19 @@ Content-Type: application/json
 > In that environment:
 > - **Do not** ask the user to create, copy or paste an API key, and do not use the
 >   `npx atlascloud-mcp` install below — that route is for a standalone server with its own key.
-> - When authorization is needed, tell the user to click "Authenticate" on the plugin, or run
->   `codex mcp login atlas-cloud`.
+> - Sign-in: in the Codex app the Atlas sign-in page opens in the browser when the plugin is
+>   installed, or on the first Atlas tool call. Ask the user to finish it there and come back.
+>   If it never opened (or was closed), tell them to open Codex **Settings**, find **atlas-cloud**
+>   in the MCP servers list and click its sign-in (Authenticate) button. Only a user working in
+>   the Codex CLI in a terminal should run `codex mcp login atlas-cloud`; do not send app users
+>   to a terminal, and never ask for an API key.
+> - Every generation is quoted before it runs. Pick the model and parameters yourself — do not
+>   ask the user to choose a model or a budget first unless they asked to choose. Unless they ask
+>   for top quality, default to a fast, cost-effective model. Call the generation tool once to get
+>   the live quote, then in one short message show the model, the key parameters and the price,
+>   name one higher-quality alternative with its price if there is one, and wait for an explicit
+>   yes before calling again with `confirmation_token`. Do this for each billable step (a
+>   storyboard image, then the video).
 > - Everything else on this page still applies: the tool names, parameters, the mandatory
 >   two-call billing flow, and every reference doc. Only the credential differs.
 >
@@ -69,7 +80,7 @@ Content-Type: application/json
 
 
 
-If the user has installed the Atlas Cloud MCP Server (`npx atlascloud-mcp`), all 16 tools below are available for direct invocation. A hosted connector exposes 14 of them — `atlas_chat` and `atlas_upload_media` are local-only, the latter because a hosted server cannot read the caller's disk. Check your own tool list rather than assuming.
+If the user has installed the Atlas Cloud MCP Server (`npx atlascloud-mcp`), all 16 tools below are available for direct invocation. A hosted connector exposes 15 of them — `atlas_upload_media` is local-only, because a hosted server cannot read the caller's disk. Check your own tool list rather than assuming.
 
 ### Model Discovery Tools
 
@@ -145,7 +156,8 @@ If the user has installed the Atlas Cloud MCP Server (`npx atlascloud-mcp`), all
 - **Params**: `prediction_id` (required): Prediction ID returned from a generation request
 - **Purpose**: Check image/video generation task status and result
 - **Status values**: `starting` → `processing` → `completed`/`succeeded`/`failed`
-- **On completion**: Returns output URL list. **Save each file with `curl -L -o "<descriptive-name>.<ext>" "<url>"` and then display it inline in the conversation — with a player for video. Do not ask for permission first.** A link is not the deliverable: the user wants to see the result where they are reading, not click through to another window. Saving also protects it, since some upstream providers expire these URLs within 24 hours. Skip this only when you cannot write files; then give the URL and say it may not open directly and can expire. Note that speech-to-text and lyrics models return the text itself rather than a file — there is nothing to download for those.
+- **Polling**: the server waits up to about 20 seconds for an unfinished task before it answers, so call `atlas_get_prediction` again right away while the task is still running, and keep polling in the same turn until it finishes. Never end your turn while a task is still processing, and never resubmit it.
+- **On completion**: follow the presentation notes in the result; they depend on the client. Where you have a shell (Codex), save each file with `curl -L --fail --max-time 600 -o "<descriptive-name>.<ext>" "<url>"`, wait until that command has actually exited (a shell tool can hand back control while curl is still writing — a half-written file shows as broken), and then show it with Markdown image syntax and the absolute path: `![<title>](/absolute/path/<name>.mp4)`. The leading `!` is what renders a player for video and the picture for an image; a plain link `[title](path)` only shows a file chip, and an HTML `<video>` tag is printed as text. Never put a remote Atlas URL inside image syntax: the storage refuses requests from the app and it renders as a broken image. If the sandbox has no network, ask to run that one download with network access. If the result says the file is still being copied to Atlas storage, poll again for the permanent link instead of downloading the temporary provider link. Speech-to-text and lyrics models return the text itself — nothing to download.
 
 #### Uploading a local file — which tool exists depends on how you are connected
 
