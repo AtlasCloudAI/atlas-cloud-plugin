@@ -20,12 +20,17 @@ Then, for anything the user wants generated:
    machine, call `atlas_get_upload_url`, POST the file to the `upload_url` it returns (wait for that
    curl to finish), and pass the `url` from its response to the generation tool. Never inline the
    file as base64 or a `data:` URI.
-3. **Never claim a result you did not get.** Atlas tools can take a few seconds to appear after a
-   chat starts. If they are missing when you first look, or a call fails with "is not a function",
-   wait about 5 seconds and look again, up to 3 times. Look again on every new user message too;
-   never repeat an earlier "not connected" without checking. If they are still missing after that, or
-   keep failing, tell the user plainly that Atlas is not reachable right now and nothing was
-   generated. Do not say an image or video was made unless a tool call returned it. Do not switch
+3. **Never claim a result you did not get.** Atlas tools can take a few seconds to load after a
+   chat starts, and again at the start of a new turn, often right after the user confirms a quote.
+   If they are missing from your tool list, wait about 5 seconds and look again, up to 3 times. If a
+   call fails with "is not a function", that call never reached Atlas and nothing was spent, even
+   when the tool is listed: wait about 5 seconds (in a JavaScript cell,
+   `await new Promise(r => setTimeout(r, 5000))`) and make the exact same call again, same tool and
+   same arguments, up to 3 times, before you tell the user anything. Do not switch to a different
+   Atlas tool to get around it; a confirmation only works with the tool that quoted it. Try again on
+   every new user message too; never repeat an earlier "not connected" or "could not submit"
+   without trying. If it still fails after that, tell the user plainly that Atlas is not reachable
+   right now and nothing was generated. Do not say an image or video was made unless a tool call returned it. Do not switch
    to another generator (such as a built-in image tool) instead: the user asked for Atlas, so ask
    them to sign in or retry rather than handing back a result from somewhere else.
 4. **Quote first, then generate, then show.** The generation tool returns the model and a live
