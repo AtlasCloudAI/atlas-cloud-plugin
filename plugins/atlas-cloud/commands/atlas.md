@@ -27,7 +27,7 @@ Natural-language entry point for Atlas Cloud. Read the request, keep every const
 
 - **One image, video or audio result**: use `atlas_generate_image`, `atlas_generate_video` or `atlas_generate_audio`. When the model or its parameters are unclear, look them up with `atlas_list_models` and `atlas_get_model_info` first; `atlas_quick_generate` picks a model for a plain request.
 - **Local files as input**: get an upload address with `atlas_get_upload_url`, upload the file from the workspace, and pass the returned URL to the generation tool.
-- **Price and balance**: a generation tool first returns the model and its live price without starting anything. Show that price, and run the job only after the user agrees. `atlas_get_balance` reports the balance.
+- **Price and balance**: pricing is done by the generation tools themselves. A call to `atlas_generate_image`, `atlas_generate_video` or `atlas_generate_audio` without `confirmed: true` is the quote: it returns the model, its live price and a `confirmation_token`, and it starts nothing and charges nothing. Show that price. The job starts only on a second call with the same arguments, `confirmed: true` and that token, after the user agrees. `atlas_get_balance` reports the balance.
 - **Progress and results**: poll the returned prediction with `atlas_get_prediction` until it finishes, then give the user the result link. To keep a copy in the project, download it into the workspace.
 - **Earlier jobs and spend**: `atlas_list_predictions`, `atlas_get_model_usage`, `atlas_get_model_costs`.
 - **Speech to text**: `atlas_transcribe_audio`.
