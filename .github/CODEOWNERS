@@ -1,0 +1,9 @@
+# What every host installs, and which server it connects to. A change here
+# reaches every user on their next plugin refresh, so a maintainer reviews it.
+/.agents/                                @binyangzhu000-sudo
+/.cursor-plugin/                         @binyangzhu000-sudo
+/plugins/atlas-cloud/.codex-plugin/      @binyangzhu000-sudo
+/plugins/atlas-cloud/.cursor-plugin/     @binyangzhu000-sudo
+/plugins/atlas-cloud/.mcp.json           @binyangzhu000-sudo
+/plugins/atlas-cloud/mcp.json            @binyangzhu000-sudo
+/.github/                                @binyangzhu000-sudo
