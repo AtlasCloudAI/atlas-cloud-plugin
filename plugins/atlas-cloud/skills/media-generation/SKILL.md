@@ -82,7 +82,7 @@ Content-Type: application/json
 
 > **Using this through the Atlas Cloud plugin (no API key needed)**
 >
-> The [Atlas Cloud Codex plugin](https://github.com/AtlasCloudAI/atlas-cloud-plugin) ships a remote
+> The [Atlas Cloud plugin](https://github.com/AtlasCloudAI/atlas-cloud-plugin) (Codex, Cursor) ships a remote
 > MCP server (`atlas-cloud`) whose credentials come
 > from **one browser sign-in by the user**, not from `ATLASCLOUD_API_KEY`. Generation is billed to
 > the user's own Atlas account.
@@ -90,12 +90,13 @@ Content-Type: application/json
 > In that environment:
 > - **Do not** ask the user to create, copy or paste an API key, and do not use the
 >   `npx atlascloud-mcp` install below — that route is for a standalone server with its own key.
-> - Sign-in: in the Codex app the Atlas sign-in page opens in the browser when the plugin is
->   installed, or on the first Atlas tool call. Ask the user to finish it there and come back.
->   If it never opened (or was closed), tell them to open Codex **Settings**, find **atlas-cloud**
->   in the MCP servers list and click its sign-in (Authenticate) button. Only a user working in
->   the Codex CLI in a terminal should run `codex mcp login atlas-cloud`; do not send app users
->   to a terminal, and never ask for an API key.
+> - Sign-in: the Atlas sign-in page opens in the browser when the plugin is installed, or on the
+>   first Atlas tool call. Ask the user to finish it there and come back. If it never opened (or
+>   was closed): in the Codex app, open **Settings**, find **atlas-cloud** in the MCP servers list
+>   and click its sign-in (Authenticate) button; in Cursor, open **Customize → MCPs** (or
+>   **Cursor Settings → MCP**), find **atlas-cloud** and click its sign-in button. Only a user
+>   working in the Codex CLI in a terminal should run `codex mcp login atlas-cloud`; do not send
+>   app users to a terminal, and never ask for an API key.
 > - Every generation is quoted before it runs. Pick the model and parameters yourself — do not
 >   ask the user to choose a model or a budget first unless they asked to choose. Unless they ask
 >   for top quality, default to a fast, cost-effective model. Call the generation tool once to get
