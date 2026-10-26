@@ -1,0 +1,18 @@
+{
+  "name": "atlas-cloud",
+  "owner": {
+    "name": "Atlas Cloud",
+    "email": "support@atlascloud.ai"
+  },
+  "metadata": {
+    "description": "Atlas Cloud for Cursor: 300+ image, video and audio models, billed to your own Atlas account",
+    "version": "0.7.6"
+  },
+  "plugins": [
+    {
+      "name": "atlas-cloud",
+      "source": "./plugins/atlas-cloud",
+      "description": "Generate images, video and audio with 300+ Atlas Cloud models. Sign in with your Atlas account, no API key to paste."
+    }
+  ]
+}

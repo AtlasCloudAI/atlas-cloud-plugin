@@ -1,0 +1,23 @@
+{
+  "name": "atlas-cloud",
+  "displayName": "Atlas Cloud",
+  "description": "Generate images, video and audio with 300+ Atlas Cloud models from Cursor. Sign in once with your Atlas account, no API key to paste, and every job is priced before it runs.",
+  "version": "0.7.6",
+  "author": {
+    "name": "Atlas Cloud",
+    "email": "support@atlascloud.ai"
+  },
+  "homepage": "https://www.atlascloud.ai/",
+  "repository": "https://github.com/AtlasCloudAI/atlas-cloud-plugin",
+  "license": "MIT",
+  "logo": "assets/app-icon.svg",
+  "keywords": [
+    "atlas-cloud",
+    "image-generation",
+    "video-generation",
+    "text-to-speech",
+    "mcp"
+  ],
+  "category": "developer-tools",
+  "tags": ["media", "image", "video", "audio", "ai-generation"]
+}
