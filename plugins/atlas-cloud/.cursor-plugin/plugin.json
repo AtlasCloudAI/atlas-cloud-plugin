@@ -2,7 +2,7 @@
   "name": "atlas-cloud",
   "displayName": "Atlas Cloud",
   "description": "Generate images, video and audio with 300+ Atlas Cloud models from Cursor. Sign in once with your Atlas account, no API key to paste, and every job is priced before it runs.",
-  "version": "0.7.6",
+  "version": "0.7.7",
   "author": {
     "name": "Atlas Cloud",
     "email": "support@atlascloud.ai"
