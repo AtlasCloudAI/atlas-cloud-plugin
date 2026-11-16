@@ -225,8 +225,10 @@ Read the reference matching the job:
    conversation, and inspect it before any video request.
 2. For a supplied storyboard, display the input unless it is already visible,
    then verify it fits the chosen route.
-3. If the board passes review, generate one representative video pass without
-   waiting for approval. Otherwise refine or regenerate the board first.
+3. If the board passes review, quote one representative video pass (model,
+   duration, resolution, estimated cost) and wait for the user's explicit yes in
+   a new message before submitting it. Otherwise refine or regenerate the board
+   first. Quote and confirm every later billable segment the same way.
 4. Review identity, locks, stage end states, composition, motion, seam, and audio
    in that order, and stop at the first failure — later checks are wasted effort
    on a wrong identity. Regenerate only the failed shot or segment.
@@ -260,16 +262,26 @@ standalone setups:
 - Upload local references with `atlas_get_upload_url`; poll with
   `atlas_get_prediction` (call it again right away — the server already waits
   between checks), and keep polling in the same turn until each stage finishes.
+- If the Atlas tools are missing, the plugin is not signed in: tell the user how
+  to sign in. Do not install a Skill, look for an API key, or run
+  `scripts/generate.mjs` to get around it — those routes submit with no quote.
 
-In an agent conversation, use the **Atlas Cloud Skill** as the default direct
-generation route. It can discover a model, upload local media, submit an image
-or video request, poll, and retrieve outputs. Report `Execution: atlas-skill`
-only when it actually submitted the generation.
+Whenever Atlas MCP generation tools (`atlas_generate_image`,
+`atlas_generate_video`, ...) are in your tool list, they are the only generation
+route, because they quote every job before it runs. In that case never run
+`scripts/generate.mjs` and never call the Atlas REST API yourself: both submit
+straight away, with no quote. Use the runner only when the user explicitly asks
+for a terminal, CI, or batch run.
 
-Use `atlas-mcp` only when the user explicitly selects MCP and its generation
-tools are exposed. Use `atlas-cli` only when the user explicitly selects a
-terminal, script, CI, or batch run. If the Atlas Cloud Skill is missing, help
-install `AtlasCloudAI/atlas-cloud-skills` before selecting a fallback.
+Without those tools, in an agent conversation, use the **Atlas Cloud Skill** as
+the direct generation route. It can discover a model, upload local media, submit
+an image or video request, poll, and retrieve outputs. Before each billable
+submission, tell the user the model, duration, resolution, and estimated cost,
+and wait for an explicit yes. Report `Execution: atlas-skill` only when it
+actually submitted the generation. Use `atlas-cli` only when the user explicitly
+selects a terminal, script, CI, or batch run. If the Atlas Cloud Skill is
+missing, help install `AtlasCloudAI/atlas-cloud-skills` before selecting a
+fallback.
 
 Before reporting that an Atlas Cloud API key is missing, check the credentials
 in the **selected execution process**. For the REST runner, check
@@ -329,6 +341,10 @@ GRID_ONLY=1 node scripts/generate.mjs scripts/myjob.json
 # Run only the first independent clip or segment as a quality gate.
 CLIPS_MAX=1 node scripts/generate.mjs scripts/myjob.json
 SEGS_MAX=1 node scripts/generate.mjs scripts/myjob.json
+
+# Runs above 15 billed video seconds stop at the printed [spend-plan] line.
+# Show the user that plan and its cost; after they approve, pass the total.
+CONFIRM_SPEND_SECONDS=40 node scripts/generate.mjs scripts/myjob.json
 ```
 
 ```json
