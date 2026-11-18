@@ -6,7 +6,7 @@
   },
   "metadata": {
     "description": "Atlas Cloud for Cursor: 300+ image, video and audio models, billed to your own Atlas account",
-    "version": "0.7.8"
+    "version": "0.8.0"
   },
   "plugins": [
     {
