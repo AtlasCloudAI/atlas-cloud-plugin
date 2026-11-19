@@ -1,6 +1,7 @@
 {
   "mcpServers": {
     "atlas-cloud": {
+      "type": "http",
       "url": "https://mcp.atlascloud.ai/mcp"
     }
   }

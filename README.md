@@ -1,7 +1,7 @@
-<h1 align="center">Atlas Cloud plugin for Codex and Cursor</h1>
+<h1 align="center">Atlas Cloud plugin for Codex, Claude Code and Cursor</h1>
 
 <p align="center">
-  Generate images, video and audio with 300+ models from inside Codex, Cursor and Grok Bot.<br>
+  Generate images, video and audio with 300+ models from inside Codex, Claude Code, Cursor and Grok Bot.<br>
   Sign in once in the browser — no API key to copy or paste, and generation is billed to your own Atlas account.
 </p>
 
@@ -21,6 +21,24 @@ codex mcp login atlas-cloud
 
 Turn on the **atlas-cloud** MCP server on the plugin page. The first time you do, a browser opens
 to sign in and approve; after that it stays authorized.
+
+## Install in Claude Code
+
+```text
+/plugin marketplace add AtlasCloudAI/atlas-cloud-plugin
+/plugin install atlas-cloud@atlas-cloud
+```
+
+Then run `/mcp`, pick **plugin:atlas-cloud:atlas-cloud** and choose **Authenticate**. A browser
+opens to sign in and approve; after that it stays authorized.
+
+The same steps work from a terminal:
+
+```bash
+claude plugin marketplace add AtlasCloudAI/atlas-cloud-plugin
+claude plugin install atlas-cloud@atlas-cloud
+claude mcp login plugin:atlas-cloud:atlas-cloud
+```
 
 ## Install in Cursor
 
@@ -53,13 +71,14 @@ Grok Bot uses the Cursor plugin. Open **Connect apps**, search for **Atlas Cloud
 ## Sign in
 
 The first Atlas tool call, or the sign-in button next to **atlas-cloud** in **Customize → MCPs**
-(Cursor) or the plugin page (Codex), opens the Atlas sign-in page in your browser. Approve access
+(Cursor), the plugin page (Codex) or `/mcp` → **plugin:atlas-cloud:atlas-cloud** → **Authenticate**
+(Claude Code), opens the Atlas sign-in page in your browser. Approve access
 once; after that the connection stays authorized. Generation is billed to that Atlas account, and
 you never paste an API key.
 
 ## Try it
 
-In Cursor, start with `/atlas`, or just ask in plain words:
+In Cursor and Claude Code, start with `/atlas`, or just ask in plain words:
 
 1. **Product photo**: `/atlas A product shot of a green steel tumbler on white marble in soft morning window light, 1:1`
 2. **Reference image to video**: `/atlas Turn ./assets/product.jpg into a 5-second 9:16 video with a slow push-in`
@@ -73,6 +92,7 @@ billed, until you say go.
 | What you see | What to do |
 |---|---|
 | No Atlas tools in the chat | Open **Customize → MCPs**, find **atlas-cloud** and click its sign-in button, then start a new chat. |
+| No Atlas tools in Claude Code | Run `/mcp`, pick **plugin:atlas-cloud:atlas-cloud** and choose **Authenticate**. If it is not listed at all, update the plugin to 0.8.0 or later (older copies lacked `"type": "http"`, which Claude Code needs). |
 | The sign-in page says **Cursor** wants to access your account | Expected in Grok Bot: it signs in through Cursor. |
 | "Insufficient balance" | Top up in the [Atlas console](https://www.atlascloud.ai/console), then ask again. |
 | A video preview does not load in the chat | Open the result link, or ask the agent to download the file into the workspace. |
@@ -89,7 +109,7 @@ support@atlascloud.ai.
 | **Media Generation** (skill) | How to call Atlas from your own project — endpoints, auth, polling. This route uses your own API key. |
 | **Seedance** (skill) | Storyboard-driven Seedance video: consistent people, products and scenes, reference-to-video, extensions. |
 | **Universal Video Prompt** (skill) | One model-agnostic prompt spec, compiled to whichever video model you can actually call. |
-| **/atlas** (Cursor command) | Plain-language entry point that routes a request to the right Atlas tool. |
+| **/atlas** (Cursor and Claude Code command) | Plain-language entry point that routes a request to the right Atlas tool. |
 
 > The MCP server is named `atlas-cloud`, not `Atlas Cloud`. Codex validates server
 > names against `^[a-zA-Z0-9_:@/.-]+$` when it launches one, so a space fails to
@@ -104,21 +124,34 @@ manifest and ignores the others:
 | Host | Marketplace manifest | Plugin manifest | MCP config |
 |---|---|---|---|
 | Codex | `.agents/plugins/marketplace.json` | `.codex-plugin/plugin.json` | `.mcp.json` |
+| Claude Code | `.claude-plugin/marketplace.json` | `.claude-plugin/plugin.json` | `.mcp.json` |
 | Cursor, Grok Bot | `.cursor-plugin/marketplace.json` | `.cursor-plugin/plugin.json` | `mcp.json` |
 
-The skills under `skills/` are shared. Keep the server URL in `.mcp.json` and `mcp.json` the same,
-and bump the version in both plugin manifests together: hosts use it to decide when to refresh.
+The skills under `skills/` (and `commands/`, which Cursor and Claude Code read) are shared. Keep the
+server URL in `.mcp.json` and `mcp.json` the same, and bump the version in every plugin manifest
+and in the Cursor and Claude marketplace `metadata.version` together: hosts use it to decide when
+to refresh.
+
+Both MCP configs set `"type": "http"`. Claude Code needs it: an entry with only a `url` is parsed
+as a stdio server, fails for lacking a `command`, and is dropped without an error. Codex accepts
+the field and still connects over streamable HTTP.
 
 ## Where the skills come from
 
 The skills are maintained in [AtlasCloudAI/atlas-cloud-skills](https://github.com/AtlasCloudAI/atlas-cloud-skills);
 this repository carries copies of them. Codex does not follow symlinks when it installs a plugin —
-a symlinked `skills/` directory installs empty, with no error — so the copies are real files, and
-`sync-skills.sh` regenerates them from the source repository:
+a symlinked `skills/` directory installs empty, with no error — and Claude Code's plugin directory
+rejects symlinks outright, so the copies are real files, and `sync-skills.sh` regenerates them from
+the source repository:
 
 ```bash
-bash sync-skills.sh
+bash sync-skills.sh                                   # from the source repo's main branch
+SKILLS_REF=release/skills-0.8.0 bash sync-skills.sh   # from a branch that is not merged yet
 ```
+
+The sync replaces the copies wholesale, so make every change to a skill body in the source
+repository first. Only the frontmatter set in `sync-skills.sh` (the two renames and the
+media-generation description) is specific to this plugin.
 
 Two of them are renamed on the way in. Codex derives every visible label from the identifier, and
 identifiers allow only lowercase letters, digits and hyphens: `atlas-cloud` reads better as
